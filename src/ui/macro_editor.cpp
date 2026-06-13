@@ -8,6 +8,8 @@ MacroEditLayer* editLayer = nullptr;
 
 #ifdef GEODE_IS_WINDOWS
 
+#if 0
+// CCEGLView::onGLFWMouseMoveCallBack is inline and cannot be hooked in Geode 5.x
 class $modify(CCEGLView) {
     void onGLFWMouseMoveCallBack(GLFWwindow* v1, double v2, double v3) {
         CCEGLView::onGLFWMouseMoveCallBack(v1, v2, v3);
@@ -24,6 +26,7 @@ class $modify(CCEGLView) {
         
     }
 };
+#endif
 
 #endif
 
@@ -889,7 +892,7 @@ void MacroEditLayer::onSave(CCObject*) {
             CCArray* children = CCDirector::sharedDirector()->getRunningScene()->getChildren();
             for (CCObject* child : CCArrayExt<CCObject*>(children)) {
                 if (RecordLayer* layer = typeinfo_cast<RecordLayer*>(child)) {
-                    layer->keyBackClicked();
+                    layer->onClose(nullptr);
                     break;
                 }
             }

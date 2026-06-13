@@ -1,7 +1,7 @@
 #include "../includes.hpp"
 #include "../hacks/show_trajectory.hpp"
 
-class TrajectorySettingsLayer : public geode::Popup, public ColorPickPopupDelegate, public TextInputDelegate {
+class TrajectorySettingsLayer : public geode::Popup, public TextInputDelegate {
 
 public:
 
@@ -112,7 +112,12 @@ private:
 		color2->setColor(ccc3(130, 8, 8));
 		input->setString("240");
 
-		updateColor({});
+		ShowTrajectory& t = ShowTrajectory::get();
+		t.color1 = ccc4FFromccc3B(color1->getColor());
+		t.color2 = ccc4FFromccc3B(color2->getColor());
+		t.updateMergedColor();
+		Mod::get()->setSavedValue("trajectory_color1", ShowTrajectory::ccc3BFromccc4F(t.color1));
+		Mod::get()->setSavedValue("trajectory_color2", ShowTrajectory::ccc3BFromccc4F(t.color2));
 		textChanged(nullptr);
 	}
 
@@ -120,18 +125,15 @@ private:
 		ColorChannelSprite* color = static_cast<CCNode*>(obj)->getTag() == 1 ? color1 : color2;
 		ColorPickPopup* popup = ColorPickPopup::create(color->getColor());
 		popup->setColorTarget(color);
-		popup->setDelegate(this);
+		popup->setCallback([this](auto const&) {
+			ShowTrajectory& t = ShowTrajectory::get();
+			t.color1 = ccc4FFromccc3B(color1->getColor());
+			t.color2 = ccc4FFromccc3B(color2->getColor());
+			t.updateMergedColor();
+			Mod::get()->setSavedValue("trajectory_color1", ShowTrajectory::ccc3BFromccc4F(t.color1));
+			Mod::get()->setSavedValue("trajectory_color2", ShowTrajectory::ccc3BFromccc4F(t.color2));
+		});
 		popup->show();
-	}
-
-	void updateColor(const cocos2d::ccColor4B&) override {
-		ShowTrajectory& t = ShowTrajectory::get();
-		t.color1 = ccc4FFromccc3B(color1->getColor());
-		t.color2 = ccc4FFromccc3B(color2->getColor());
-		t.updateMergedColor();
-
-		Mod::get()->setSavedValue("trajectory_color1", ShowTrajectory::ccc3BFromccc4F(t.color1));
-		Mod::get()->setSavedValue("trajectory_color2", ShowTrajectory::ccc3BFromccc4F(t.color2));
 	}
 
 	void textChanged(CCTextInputNode*) override {

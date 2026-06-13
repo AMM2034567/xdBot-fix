@@ -67,3 +67,29 @@ build-*/
 
 # CLion
 /cmake-build-*/
+
+# Geode SDK (local install)
+geode-sdk/
+
+# Local bindings clone
+bindings-repo/
+
+# CPM package cache
+cpm-cache/
+
+# Reasonix cache
+.codegraph/
+.reasonix/
+
+# Temp files
+tmp/
+gd_fake/
+my-epic-geode-cli/
+cli-profile/
+
+# sccache
+.sccache/
+
+# Built .geode packages
+*.geode
+output/

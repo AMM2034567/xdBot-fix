@@ -196,7 +196,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
     bool macroInput = false;
   };
 
-  void processCommands(float dt) {
+  void processCommands(float dt, bool isHalfTick, bool isLastTick) {
     auto& g = Global::get();
 
     PlayLayer* pl = PlayLayer::get();
@@ -204,7 +204,7 @@ class $modify(BGLHook, GJBaseGameLayer) {
     if (!pl) {
       // handlePlaying(Global::getCurrentFrame(true));
       // log::debug("{}", Global::getCurrentFrame(true));
-      return GJBaseGameLayer::processCommands(dt, false, false);
+      return GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
     }
 
     Global::updateSeed();
@@ -229,11 +229,11 @@ class $modify(BGLHook, GJBaseGameLayer) {
       }
 
       if (g.previousFrame == frame && frame != 0 && g.macro.xdBotMacro)
-        return GJBaseGameLayer::processCommands(dt, false, false);
+        return GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
 
     }
 
-    GJBaseGameLayer::processCommands(dt, false, false);
+    GJBaseGameLayer::processCommands(dt, isHalfTick, isLastTick);
 
     if (g.state == state::none)
       return;

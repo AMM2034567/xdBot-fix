@@ -310,7 +310,6 @@ bool ClickSettingsLayer::setup() {
 	m_mainLayer->addChild(menu);
 
 	this->button = button;
-	this->clickbotLayer = layer;
 
 	matjson::Value data = Mod::get()->getSavedValue<matjson::Value>(button);
 	settings = matjson::Serialize<ClickSetting>::from_json(data);
@@ -404,9 +403,9 @@ void ClickSettingsLayer::onSelectFile(CCObject*) {
 	textFilter.files = { "*.mp3", "*.ogg" };
 	fileOptions.filters.push_back(textFilter);
 
-	file::pick(file::PickMode::OpenFile, { Mod::get()->getResourcesDir(), { textFilter } }).listen([this](Result<std::filesystem::path>* res) {
-		if (res->isOk()) {
-			std::filesystem::path path = res->unwrapOrDefault();
+	geode::async::spawn(file::pick(file::PickMode::OpenFile, { Mod::get()->getResourcesDir(), { textFilter } }), [this](Result<std::optional<std::filesystem::path>> res) {
+		if (res.isOk() && res.unwrap().has_value()) {
+			std::filesystem::path path = res.unwrap().value();
 
 			filenameLabel->setString(path.filename().string().c_str());
 

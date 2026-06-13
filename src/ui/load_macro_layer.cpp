@@ -148,9 +148,9 @@ void LoadMacroLayer::onImportMacro(CCObject*) {
 	textFilter.files = { "*.gdr", "*.xd", "*.json" };
 	fileOptions.filters.push_back(textFilter);
 
-	file::pick(file::PickMode::OpenFile, { dirs::getGameDir(), { textFilter } }).listen([this](Result<std::filesystem::path>* res) {
-		if (res->isOk()) {
-			std::filesystem::path path = res->unwrapOrDefault();
+	geode::async::spawn(file::pick(file::PickMode::OpenFile, { dirs::getGameDir(), { textFilter } }), [this](Result<std::optional<std::filesystem::path>> res) {
+		if (res.isOk() && res.unwrap().has_value()) {
+			std::filesystem::path path = res.unwrap().value();
 
 			auto& g = Global::get();
 			Macro tempMacro;
@@ -697,7 +697,7 @@ void MacroCell::handleLoad() {
 
 		if (mergeLayer) {
 			typeinfo_cast<MacroEditLayer*>(mergeLayer)->mergeMacro(newMacro.inputs, players, static_cast<LoadMacroLayer*>(loadLayer)->owToggle->isToggled());
-			loadLayer->keyBackClicked();
+			static_cast<FLAlertLayer*>(loadLayer)->keyBackClicked();
 		}
 
 		return;
@@ -711,12 +711,12 @@ void MacroCell::handleLoad() {
 
     g.macro.xdBotMacro = g.macro.botInfo.name == "xdBot";
 
-	loadLayer->keyBackClicked();
+	static_cast<FLAlertLayer*>(loadLayer)->keyBackClicked();
 
 	RecordLayer* newLayer = nullptr;
 
 	if (RecordLayer* layer = typeinfo_cast<RecordLayer*>(menuLayer)) {
-		layer->keyBackClicked();
+		static_cast<FLAlertLayer*>(layer)->keyBackClicked();
 		newLayer = RecordLayer::openMenu(true);
 	}
 

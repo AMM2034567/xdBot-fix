@@ -86,7 +86,6 @@ struct button {
 struct PlayerData {
 #ifdef GEODE_IS_WINDOWS
     std::unordered_map<int, GJPointDouble> m_rotateObjectsRelated;
-    std::unordered_map<int, GameObject*> m_maybeRotatedObjectsMap;
     std::unordered_set<int> m_touchedRings;
     std::unordered_set<int> m_ringRelatedSet;
     std::map<int, bool> m_jumpPadRelated;
@@ -139,7 +138,6 @@ struct PlayerData {
     bool m_isCollidingWithSlope;
     bool m_isBallRotating;
     bool m_unk669;
-    GameObject* m_currentSlope3;
     GameObject* m_currentSlope;
     double unk_584;
     int m_collidingWithSlopeId;
@@ -172,13 +170,9 @@ struct PlayerData {
     double m_lastJumpTime;
     double m_lastFlipTime;
     double m_flashTime;
-    float m_flashRelated;
-    float m_flashRelated1;
     double m_lastSpiderFlipTime;
     bool m_unkBool5;
     bool m_maybeIsVehicleGlowing;
-    bool m_gv0096;
-    bool m_gv0100;
     double m_accelerationOrSpeed;
     double m_snapDistance;
     bool m_ringJumpRelated;
@@ -239,7 +233,6 @@ struct PlayerData {
     double m_maybeReverseAcceleration;
     float m_xVelocityRelated2;
     bool m_isDashing;
-    int m_unk9e8;
     int m_groundObjectMaterial;
     float m_vehicleSize;
     float m_playerSpeed;
@@ -259,18 +252,14 @@ struct PlayerData {
     cocos2d::CCArray* m_touchingRings;
     GameObject* m_lastActivatedPortal;
     bool m_hasEverJumped;
-    bool m_ringOrStreakRelated;
     cocos2d::CCPoint m_position;
     bool m_isSecondPlayer;
     bool m_unkA99;
     double m_totalTime;
     bool m_isBeingSpawnedByDualPortal;
-    float m_unkAAC;
     float m_unkAngle1;
     float m_yVelocityRelated3;
-    bool m_gamevar0060;
     bool m_swapColors;
-    bool m_gamevar0062;
     int m_followRelated;
     float m_unk838;
     int m_stateOnGround;
@@ -323,9 +312,6 @@ struct PlayerData {
     bool m_isOutOfBounds;
     float m_fallStartY;
     bool m_disablePlayerSqueeze;
-    bool m_robotHasRun3;
-    bool m_robotHasRun2;
-    bool m_item20;
     bool m_ignoreDamage;
     bool m_enable22Changes;
 };
@@ -337,3 +323,4 @@ struct CheckpointData {
     uintptr_t seed;
     int previousFrame;
 };
+
