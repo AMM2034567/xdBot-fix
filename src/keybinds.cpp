@@ -1,4 +1,3 @@
-
 #include "includes.hpp"
 #include "ui/record_layer.hpp"
 #include "ui/game_ui.hpp"
@@ -11,7 +10,7 @@
 #include <Geode/modify/CCKeyboardDispatcher.hpp>
 #include <Geode/modify/CCTouchDispatcher.hpp>
 
-#ifdef GEODE_IS_WINDOWS
+#if defined(GEODE_IS_WINDOWS) && __has_include(<geode.custom-keybinds/include/Keybinds.hpp>)
 
 #include <geode.custom-keybinds/include/Keybinds.hpp>
 #include <regex>
@@ -25,7 +24,7 @@ const std::vector<std::string> keybindIDs = {
 };
 
 class $modify(CCKeyboardDispatcher) {
-  bool dispatchKeyboardMSG(enumKeyCodes key, bool isKeyDown, bool isKeyRepeat) {
+  bool dispatchKeyboardMSG(enumKeyCodes key, bool isKeyDown, bool isKeyRepeat, double timestamp) {
   
     auto& g = Global::get();
 
@@ -37,21 +36,7 @@ class $modify(CCKeyboardDispatcher) {
       }
     }
 
-    // if (key == enumKeyCodes::KEY_L && !isKeyRepeat && isKeyDown) {
-    // }
-
-    // if (key == enumKeyCodes::KEY_F && !isKeyRepeat && isKeyDown && PlayLayer::get()) {
-    //   log::debug("POS DEBUG {}", PlayLayer::get()->m_player1->getPosition());
-    //   log::debug("POS2 DEBUG {}", PlayLayer::get()->m_player2->getPosition());
-    // }
-
-
-    // if (key == enumKeyCodes::KEY_J && !isKeyRepeat && isKeyDown && PlayLayer::get()) {
-    //   std::string str = ZipUtils::decompressString(PlayLayer::get()->m_level->m_levelString.c_str(), true, 0);
-    //   log::debug("{}", str);
-    // }
-
-    return CCKeyboardDispatcher::dispatchKeyboardMSG(key, isKeyDown, isKeyRepeat);
+    return CCKeyboardDispatcher::dispatchKeyboardMSG(key, isKeyDown, isKeyRepeat, timestamp);
   }
 };
 
@@ -65,11 +50,11 @@ namespace keybinds {
 
 #endif
 
+#if defined(GEODE_IS_WINDOWS) && __has_include(<geode.custom-keybinds/include/Keybinds.hpp>)
+
 using namespace keybinds;
 
 void onKeybind(bool down, ActionID id) {
-#ifdef GEODE_IS_WINDOWS
-
   auto& g = Global::get();
 
   if (!down || (LevelEditorLayer::get() && !g.mod->getSettingValue<bool>("editor_keybinds")) || g.mod->getSettingValue<bool>("disable_keybinds"))
@@ -135,14 +120,9 @@ void onKeybind(bool down, ActionID id) {
         static_cast<RecordLayer*>(g.layer)->noclipToggle->toggle(g.mod->getSavedValue<bool>("macro_noclip"));
     }
   }
-
-#endif
-
 }
 
 $execute{
-
-  #ifdef GEODE_IS_WINDOWS
 
     BindManager * bm = BindManager::get();
 
@@ -232,5 +212,6 @@ $execute{
         }, InvokeBindFilter(nullptr, (""_spr) + keybindIDs[i]));
     }
 
-  #endif
 }
+
+#endif

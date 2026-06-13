@@ -4,7 +4,9 @@
 #include <Geode/modify/CCTextInputNode.hpp>
 
 #ifdef GEODE_IS_WINDOWS
+#if __has_include(<geode.custom-keybinds/include/Keybinds.hpp>)
 #include <geode.custom-keybinds/include/Keybinds.hpp>
+#endif
 #endif
 
 #include <random>
@@ -186,7 +188,7 @@ int Global::getCurrentFrame(bool editor) {
 }
 
 void Global::updateKeybinds() {
-#ifdef GEODE_IS_WINDOWS
+#if defined(GEODE_IS_WINDOWS) && __has_include(<geode.custom-keybinds/include/Keybinds.hpp>)
 
   auto& g = Global::get();
   for (size_t i = 0; i < 6; i++) {
