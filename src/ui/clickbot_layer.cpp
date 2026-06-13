@@ -285,9 +285,11 @@ bool ClickbotLayer::setup() {
 	return true;
 }
 
-ClickSettingsLayer* ClickSettingsLayer::create(std::string button, geode::Popup<>* layer) {
+ClickSettingsLayer* ClickSettingsLayer::create(std::string button, geode::Popup* layer) {
 	ClickSettingsLayer* ret = new ClickSettingsLayer();
-	if (ret->initAnchored(250, 173, button, layer, Utils::getTexture().c_str())) {
+	ret->button = button;
+	ret->clickbotLayer = layer;
+	if (ret->init(250, 173, Utils::getTexture().c_str()) && ret->setup()) {
 		ret->autorelease();
 		return ret;
 	}
@@ -296,7 +298,7 @@ ClickSettingsLayer* ClickSettingsLayer::create(std::string button, geode::Popup<
 	return nullptr;
 }
 
-bool ClickSettingsLayer::setup(std::string button, geode::Popup<>* layer) {
+bool ClickSettingsLayer::setup() {
 	cocos2d::CCPoint offset = (CCDirector::sharedDirector()->getWinSize() - m_mainLayer->getContentSize()) / 2;
     m_mainLayer->setPosition(m_mainLayer->getPosition() - offset);
     m_closeBtn->setPosition(m_closeBtn->getPosition() + offset);

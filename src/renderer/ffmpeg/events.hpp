@@ -8,24 +8,28 @@ namespace ffmpeg::events {
 namespace impl {
 #define DEFAULT_RESULT_ERROR geode::Err("Event was not handled")
 
-    class CreateRecorderEvent : public geode::Event {
+    class CreateRecorderEvent : public geode::Event<CreateRecorderEvent, bool(CreateRecorderEvent&)> {
     public:
         CreateRecorderEvent() {m_ptr = nullptr;}
         void setPtr(void* ptr) {m_ptr = ptr;}
         void* getPtr() const {return m_ptr;}
+
+        void post() { this->send(*this); }
     private:
         void* m_ptr;
     };
 
-    class DeleteRecorderEvent : public geode::Event {
+    class DeleteRecorderEvent : public geode::Event<DeleteRecorderEvent, bool(DeleteRecorderEvent&)> {
     public:
         DeleteRecorderEvent(void* ptr) {m_ptr = ptr;}
         void* getPtr() const {return m_ptr;}
+
+        void post() { this->send(*this); }
     private:
         void* m_ptr;
     };
 
-    class InitRecorderEvent : public geode::Event {
+    class InitRecorderEvent : public geode::Event<InitRecorderEvent, bool(InitRecorderEvent&)> {
     public:
         InitRecorderEvent(void* ptr, const RenderSettings* settings) {
             m_ptr = ptr;
@@ -39,44 +43,52 @@ namespace impl {
 
         const RenderSettings& getRenderSettings() const {return *m_renderSettings;}
 
+        void post() { this->send(*this); }
+
     private:
         const RenderSettings* m_renderSettings;
         void* m_ptr;
         geode::Result<> m_result = DEFAULT_RESULT_ERROR;
     };
 
-    class StopRecorderEvent : public geode::Event {
+    class StopRecorderEvent : public geode::Event<StopRecorderEvent, bool(StopRecorderEvent&)> {
     public:
         StopRecorderEvent(void* ptr) {m_ptr = ptr;}
         void* getPtr() const {return m_ptr;}
+
+        void post() { this->send(*this); }
     private:
         void* m_ptr;
     };
 
     struct Dummy {};
 
-    class GetWriteFrameFunctionEvent : public geode::Event {
+    class GetWriteFrameFunctionEvent : public geode::Event<GetWriteFrameFunctionEvent, bool(GetWriteFrameFunctionEvent&)> {
     public:
         using writeFrame_t = geode::Result<>(Dummy::*)(std::vector<uint8_t> const&);
         GetWriteFrameFunctionEvent() = default;
 
         void setFunction(writeFrame_t function) {m_function = function;}
         writeFrame_t getFunction() const {return m_function;}
+
+        void post() { this->send(*this); }
     private:
         writeFrame_t m_function;
     };
 
-    class CodecRecorderEvent : public geode::Event {
+    class CodecRecorderEvent : public geode::Event<CodecRecorderEvent, bool(CodecRecorderEvent&)> {
     public:
         CodecRecorderEvent() = default;
 
         void setCodecs(std::vector<std::string>&& codecs) {m_codecs = std::move(codecs);}
         const std::vector<std::string>& getCodecs() const {return m_codecs;}
+
+        void post() { this->send(*this); }
     private:
         std::vector<std::string> m_codecs;
     };
 
-    class MixVideoAudioEvent : public geode::Event {
+    class MixVideoAudioEvent : public geode::Event<MixVideoAudioEvent, bool(MixVideoAudioEvent&)> {
     public:
         MixVideoAudioEvent(const std::filesystem::path& videoFile, const std::filesystem::path& audioFile, const std::filesystem::path& outputMp4File) {
             m_videoFile = &videoFile;
@@ -91,6 +103,8 @@ namespace impl {
         std::filesystem::path const& getAudioFile() const {return *m_audioFile;}
         std::filesystem::path const& getOutputMp4File() const {return *m_outputMp4File;}
 
+        void post() { this->send(*this); }
+
     private:
         const std::filesystem::path* m_videoFile;
         const std::filesystem::path* m_audioFile;
@@ -98,7 +112,7 @@ namespace impl {
         geode::Result<> m_result = DEFAULT_RESULT_ERROR;
     };
 
-    class MixVideoRawEvent : public geode::Event {
+    class MixVideoRawEvent : public geode::Event<MixVideoRawEvent, bool(MixVideoRawEvent&)> {
     public:
         MixVideoRawEvent(const std::filesystem::path& videoFile, const std::vector<float>& raw, const std::filesystem::path& outputMp4File) {
             m_videoFile = &videoFile;
@@ -112,6 +126,8 @@ namespace impl {
         std::filesystem::path const& getVideoFile() const {return *m_videoFile;}
         std::vector<float> const& getRaw() const {return *m_raw;}
         std::filesystem::path const& getOutputMp4File() const {return *m_outputMp4File;}
+
+        void post() { this->send(*this); }
 
     private:
         const std::filesystem::path* m_videoFile;

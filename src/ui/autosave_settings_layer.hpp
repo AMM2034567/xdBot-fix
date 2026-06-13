@@ -1,6 +1,6 @@
 #include "../includes.hpp"
 
-class AutoSaveLayer : public geode::Popup<>, public TextInputDelegate {
+class AutoSaveLayer : public geode::Popup, public TextInputDelegate {
 
 private:
 
@@ -21,7 +21,7 @@ private:
 		Mod::get()->setSavedValue("autosave_interval", str);
 	}
 	
-    bool setup() override {
+    bool setup() {
         setTitle("AutoSave");
 		m_title->setScale(0.575f);
 		m_title->setPositionY(171);

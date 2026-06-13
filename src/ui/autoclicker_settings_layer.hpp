@@ -1,6 +1,6 @@
 #include "../includes.hpp"
 
-class AutoclickerLayer : public geode::Popup<>, public TextInputDelegate {
+class AutoclickerLayer : public geode::Popup, public TextInputDelegate {
 
 private:
 
@@ -45,7 +45,7 @@ private:
 		releaseLbl2->setString(fmt::format("{:.3f}s", dt * g.releaseFor2).c_str());
 	}
 	
-    bool setup() override {
+    bool setup() {
         setTitle("Autoclicker");
 		m_title->setScale(0.625f);
 		m_title->setPositionY(224);
